@@ -1,6 +1,6 @@
 # express-bootstrap
 
-**express-bootstrap** is a Node.js package that simplifies the process of setting up an Express.js server by automating repetitive configuration tasks. It helps developers quickly start their projects without having to manually configure things like logging, database connections, CORS, and static file serving.
+**express-bootstrap** is a Node.js package that simplifies the process of setting up an Express.js server by automating repetitive configuration tasks. It helps developers quickly start their projects without having to manually configure things like logging, MongoDB connections, CORS, and static file serving.
 
 ## Objective
 
@@ -15,6 +15,7 @@ The main goal of **express-bootstrap** is to help developers start their project
 - **Static File Serving**: Easily serve multiple static folders with different paths.
 - **Error Handling**: Built-in error handling middleware.
 - **Quick and Easy Setup**: All configurations are provided in one place.
+- **API Limiter**: Resilient rate limiting strategy for fault-tolerant API rate limiting.
 
 ## Installation
 
@@ -87,6 +88,12 @@ bootstrap({
   compression: { level: -1 },
   helmet: {
     active: true,
+  },
+  limiter: {
+    windowMs: 10 * 60 * 1000,
+    limit: 150,
+    standardHeaders: "draft-8",
+    legacyHeaders: false,
   },
   errorsHandler: (errors) => console.log(errors),
   loggerFormat: ":remote-addr 🔗 :method ➡️ :url :status :status-color ⏱️ :response-time ms",
@@ -208,6 +215,10 @@ With no auth and localhost configuration
 ### helmet options
 
 > [**helmet options:** as helmet props](https://www.npmjs.com/package/helmet)
+
+### limiter options
+
+> [**limiter options:** as limiter props](https://www.npmjs.com/package/express-rate-limit)
 
 ### Real world exmaples
 

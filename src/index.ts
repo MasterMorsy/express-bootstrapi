@@ -6,22 +6,33 @@ import appCors from "./lib/corsHandler";
 import helmet from "helmet";
 import { IBootstrapOptions, IStaticFolder } from "./lib";
 import connectDBs from "./lib/mongooseConnector";
-import compression from "compression";
+const compression = require("compression");
 import globalRoutesHandler from "./lib/globalRoutesHandler";
+import limiter, { defaultLimiterOptions } from "./lib/apiLimiter";
 
 const app = express();
 
 async function bootstrap(options: IBootstrapOptions) {
   // Disable the X-Powered-By header
   app.disable("x-powered-by");
-
+  // Api Limiter
+  if (options.limiter) {
+    app.use(
+      limiter(
+        typeof options.limiter === "boolean" ? defaultLimiterOptions : { ...defaultLimiterOptions, ...options.limiter }
+      )
+    );
+  }
   app.use(express.json(options.urlencoded ?? {}));
   app.use(express.urlencoded(options.urlencoded ?? {}));
+  // payload compression
   app.use(compression(options.compression ?? {}));
+
   if (options.helmet && options.helmet.active) app.use(helmet(options.helmet.options ?? {}));
 
   // Custom Morgan format string with icons
-  const customFormat = options.loggerFormat ?? ":remote-addr 🔗 :method ➡️ :url :status :status-color ⏱️ :response-time ms";
+  const customFormat =
+    options.loggerFormat ?? ":remote-addr 🔗 :method ➡️ :url :status :status-color ⏱️ :response-time ms";
   // Define custom token for status color
   logger.token("status-color", (_, res) => {
     const statusCode = res.statusCode;
@@ -46,7 +57,9 @@ async function bootstrap(options: IBootstrapOptions) {
 
   if (options.customHandler) options.customHandler(app, db);
 
-  app.use((req: Request, res: Response, next: NextFunction) => appCors(req, res, next, options.cors, options.staticFolders, options.poweredBy));
+  app.use((req: Request, res: Response, next: NextFunction) =>
+    appCors(req, res, next, options.cors, options.staticFolders, options.poweredBy)
+  );
 
   if (options.staticFolders?.length) {
     options.staticFolders.map((staticFolder: IStaticFolder) => {
@@ -72,7 +85,9 @@ async function bootstrap(options: IBootstrapOptions) {
   }
 
   // Error handling middleware
-  app.use((error: any, req: Request, res: Response, next: NextFunction) => handleAppError(error, req, res, next, options.errorsHandler));
+  app.use((error: any, req: Request, res: Response, next: NextFunction) =>
+    handleAppError(error, req, res, next, options.errorsHandler)
+  );
 
   // Server configuration
   const port = Number(options?.port ?? 9000);

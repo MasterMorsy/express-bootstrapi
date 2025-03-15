@@ -1,7 +1,7 @@
 {
   "name": "express-bootstrapi",
-  "version": "1.4.8",
-  "description": "A lightweight, flexible Node.js package that simplifies the setup of Express.js applications with built-in support for database connections, CORS, logging, security middleware, and static file serving. Save time by automating common configuration tasks, allowing you to focus on building your app.",
+  "version": "1.5.0",
+  "description": "A lightweight, flexible Node.js package that simplifies the setup of Express.js applications with built-in support for mongodb connections, CORS, logging, security middleware, and static file serving. Save time by automating common configuration tasks, allowing you to focus on building your app.",
   "main": "dist/index.js",
   "types": "dist/lib/index.d.ts",
   "author": "MasterMorsy",
@@ -39,6 +39,7 @@
   "dependencies": {
     "compression": "^1.7.4",
     "express": "^4.19.2",
+    "express-rate-limit": "^7.5.0",
     "helmet": "^7.1.0",
     "mongoose": "^8.6.1",
     "morgan": "^1.10.0"

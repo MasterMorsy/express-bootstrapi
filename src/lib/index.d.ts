@@ -1,3 +1,5 @@
+import { Options } from "express-rate-limit";
+
 export interface AppErrorResponseTypes {
   error: {
     message: string;
@@ -62,6 +64,7 @@ export interface IBootstrapOptions {
   errorsHandler?: Function;
   poweredBy?: string;
   customHandler?: Function;
+  limiter?: Boolean | Partial<Options>;
 }
 
 interface CompressionOptions {
